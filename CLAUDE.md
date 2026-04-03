@@ -12,27 +12,25 @@ A blockchain built from scratch in Go for learning purposes. Implements Proof of
 
 - **Language**: Go 1.17+
 - **No frameworks** for core blockchain logic — only stdlib + minimal dependencies
-- **Cobra** for CLI (optional, can use stdlib `flag` to keep it simple)
+- **stdlib `flag`** for CLI (no Cobra dependency)
 
 ## Project Structure
 
 ```
-├── cmd/              # CLI entry points
-│   └── blockchain/   # Main binary
-├── core/             # Core blockchain types (Block, Blockchain, State)
-├── consensus/        # Proof of Stake validator selection, staking
-├── crypto/           # Hashing, wallets, digital signatures
-├── network/          # P2P networking, node sync
-├── persistence/      # Disk storage, chain serialization
-├── docs/             # PRDs and design documents
-│   └── prd/
+├── cmd/blockchain/   # CLI entry point and commands
+├── core/             # Block, Blockchain, Transaction, State, Genesis
+├── consensus/        # Proof of Stake validator selection, staking, slashing
+├── bcrypto/          # ECDSA wallets, digital signatures
+├── network/          # P2P node, HTTP API, chain sync, tx gossip
+├── persistence/      # JSON Lines storage, incremental state
+├── docs/prd/         # PRDs for each phase
+├── genesis.json      # Default genesis configuration
 └── go.mod
 ```
 
 ## Conventions
 
 - **Explain before building** — this is a learning project, so clarity > cleverness
-- **Incremental commits** — each phase gets its own branch and PR
 - **Tests for core logic** — especially block validation, consensus, and crypto
 - **Go idioms** — exported names are PascalCase, unexported are camelCase, errors returned (not panicked)
 
@@ -41,4 +39,20 @@ A blockchain built from scratch in Go for learning purposes. Implements Proof of
 ```bash
 go build ./cmd/blockchain
 go test ./...
+```
+
+## Running a Node
+
+```bash
+# Bootstrap a fresh chain
+go run ./cmd/blockchain/ bootstrap
+
+# Start a node
+go run ./cmd/blockchain/ run --address <wallet-addr> --port 3001 --peers http://localhost:3002
+
+# CLI commands (against local data)
+go run ./cmd/blockchain/ status
+go run ./cmd/blockchain/ balances
+go run ./cmd/blockchain/ send --from <addr> --to <addr> --amount 100
+go run ./cmd/blockchain/ wallet-new
 ```
