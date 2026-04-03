@@ -26,6 +26,12 @@ Save the blockchain to disk and reload it on startup so data survives restarts.
 - Validate the entire chain after loading (detect corruption/tampering)
 - If no file exists, start fresh with genesis block
 
+### State Snapshot
+- Maintain an incremental state snapshot (balances) updated after each block
+- Eliminates the need to replay all transactions from genesis on every query
+- Full replay from genesis only needed if snapshot is corrupted or missing
+- Inspired by Ethereum's approach: compute state once, update incrementally
+
 ### Genesis Config
 - `genesis.json` file defines initial balances and chain parameters
 - Loaded once at chain creation, never modified
